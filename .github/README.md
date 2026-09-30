@@ -7,10 +7,12 @@ where each app expects it — no symlinks, no stow.
 
 ### Before leaving the old Mac
 
-Dump the installed apps to the Brewfile and push:
+`~/.Brewfile` is re-dumped automatically after every `brew install`, `uninstall` or
+`tap` (see the `brew` wrapper in `~/.config/zsh/alias.zsh`), so it only needs checking.
+List anything installed that isn't in it, then commit and push:
 
 ```sh
-bfile
+brew bundle cleanup --global
 dot commit -am "Update Brewfile" && dot push
 ```
 
@@ -56,7 +58,7 @@ need adding explicitly.
 dot status
 dot add ~/.config/foo/config.toml
 dot commit -m "Add foo config"
-dot push
+dot commit -am "Update Brewfile" && dot push
 ```
 
 `lg-dot` opens lazygit on the repo.
@@ -69,7 +71,7 @@ Because the work tree is the whole home folder, never `dot add` a directory whol
 | Path | What |
 |---|---|
 | `.zshrc`, `.zprofile`, `.zshenv`, `.config/zsh/` | zsh |
-| `.Brewfile` | Homebrew packages (`bfile` to update) |
+| `.Brewfile` | Homebrew packages (updated automatically; `bfile` to force) |
 | `.gitconfig`, `.gitignore` | git, plus the global excludes |
 | `.config/{nvim,wezterm,yazi,karabiner,herdr}/` | app config |
 | `Library/Application Support/` | VS Code and lazygit |

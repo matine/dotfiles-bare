@@ -30,7 +30,16 @@ alias lg="lazygit"
 alias bi="brew install"
 alias bu="brew uninstall"
 alias bup="brew upgrade"
-alias bfile="brew bundle dump --force --file=$HOME/.Brewfile"
+alias bfile="brew bundle dump --global --force"
+
+# Keep ~/.Brewfile in sync after installs and removals
+brew() {
+	command brew "$@" || return
+	case $1 in
+		install|uninstall|remove|rm|reinstall|tap|untap)
+			command brew bundle dump --global --force --quiet ;;
+	esac
+}
 
 # Remap ls to eza
 alias ls="eza --all --hyperlink"

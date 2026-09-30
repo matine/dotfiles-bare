@@ -102,6 +102,7 @@ brew "sevenzip"
 # Cross-shell prompt for astronauts
 brew "starship"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
+brew "stow"
 # Opinionated Lua code formatter
 brew "stylua"
 # Terminal multiplexer
@@ -177,6 +178,7 @@ mas "Keynote", id: 409183694
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Xcode", id: 497799835
+vscode "anthropic.claude-code"
 vscode "dbaeumer.vscode-eslint"
 vscode "donjayamanne.githistory"
 vscode "esbenp.prettier-vscode"
@@ -194,3 +196,4 @@ vscode "xyc.vscode-mdx-preview"
 npm "@anthropic-ai/claude-code"
 npm "corepack"
 npm "tsx"
+npm "vercel"

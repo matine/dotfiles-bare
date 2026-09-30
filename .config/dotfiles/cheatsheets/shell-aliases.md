@@ -23,7 +23,7 @@
 | `bi` | `brew install` | `~/.config/zsh/alias.zsh` |
 | `bu` | `brew uninstall` | `~/.config/zsh/alias.zsh` |
 | `bup` | `brew upgrade` | `~/.config/zsh/alias.zsh` |
-| `bfile` | `brew bundle dump --force --file=$HOME/.Brewfile` | `~/.config/zsh/alias.zsh` |
+| `bfile` | `brew bundle dump --global --force` | `~/.config/zsh/alias.zsh` |
 | `ls` | `eza --all --hyperlink` | `~/.config/zsh/alias.zsh` |
 | `ls-p` | `eza --all --absolute=on` | `~/.config/zsh/alias.zsh` |
 | `gita` | Show git alias — `git config --get-regexp alias` | `~/.config/zsh/alias.zsh` |
