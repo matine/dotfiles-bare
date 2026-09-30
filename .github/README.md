@@ -5,17 +5,6 @@ where each app expects it — no symlinks, no stow.
 
 ## New machine
 
-### Before leaving the old Mac
-
-`~/.Brewfile` is re-dumped automatically after every `brew install`, `uninstall` or
-`tap` (see the `brew` wrapper in `~/.config/zsh/alias.zsh`), so it only needs checking.
-List anything installed that isn't in it, then commit and push:
-
-```sh
-brew bundle cleanup --global
-dot commit -am "Update Brewfile" && dot push
-```
-
 ### Install
 
 ```sh
@@ -38,7 +27,7 @@ It is safe to re-run.
 ### Then, by hand
 
 - [ ] Fill in `~/.zshrc.local` — see [Secrets](#secrets)
-- [ ] Open WezTerm and start a new shell
+- [ ] Open Ghostty and start a new shell
 - [ ] Raycast → Settings → Extensions → Script Commands → add `~/.config/dotfiles/raycast`
 - [ ] In Claude Code, run `/mcp` to check the MCP servers connect
 - [ ] Log out and back in for the macOS preferences to take effect
@@ -63,6 +52,9 @@ dot commit -am "Update Brewfile" && dot push
 
 `lg-dot` opens lazygit on the repo.
 
+`~/.Brewfile` updates itself after every `brew install`, `uninstall` or `tap`, so commit it
+with everything else.
+
 Because the work tree is the whole home folder, never `dot add` a directory wholesale
 (`dot add ~/.config`) — add specific files or small, known directories.
 
@@ -73,8 +65,8 @@ Because the work tree is the whole home folder, never `dot add` a directory whol
 | `.zshrc`, `.zprofile`, `.zshenv`, `.config/zsh/` | zsh |
 | `.Brewfile` | Homebrew packages (updated automatically; `bfile` to force) |
 | `.gitconfig`, `.gitignore` | git, plus the global excludes |
-| `.config/{nvim,wezterm,yazi,karabiner,herdr}/` | app config |
-| `Library/Application Support/` | VS Code and lazygit |
+| `.config/{nvim,yazi,karabiner,herdr}/` | app config |
+| `Library/Application Support/` | VS Code, lazygit and Ghostty |
 | `.claude/` | Claude Code settings, hooks, commands |
 | `.agents/` | Agent skills (`.skill-lock.json` records their sources) |
 | `.local/bin/` | CLIs on `PATH`: `chirp` (script logging), `keys` (cheatsheet search) |

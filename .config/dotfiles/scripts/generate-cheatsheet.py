@@ -978,45 +978,6 @@ def parse_nvim(config_dir):
     return Section("Neovim", "neovim", rows, notes)
 
 
-def parse_wezterm(path):
-    text = read(path)
-    if text is None:
-        return None
-
-    source = code(rel(path))
-    rows = []
-    notes = []
-
-    leader = re.search(r"config\.leader\s*=\s*\{([^}]*)\}", text)
-    if leader:
-        rendered = "+".join(
-            filter(
-                None,
-                [lua_field(leader.group(1), "mods"), lua_field(leader.group(1), "key")],
-            )
-        )
-        rows.append((code(rendered), "**Leader** prefix for the bindings below", source))
-        notes.append("`LEADER` in the table above means press {} first.".format(code(rendered)))
-
-    inner = block_after(text, r"config\.keys\s*=\s*\{")
-    for entry in top_level_tables(inner or ""):
-        body = entry[1:-1]  # drop the entry's own braces so the action ends cleanly
-        key = lua_field(body, "key")
-        if key is None:
-            continue
-        rendered = "+".join(
-            filter(None, [lua_field(body, "mods"), key.replace("\\\\", "\\")])
-        )
-        action = re.search(r"action\s*=\s*(.+)", body, re.S)
-        if action:
-            what = re.sub(r"\s+", " ", action.group(1)).strip().rstrip(",").strip()
-            what = what.replace("wezterm.action.", "")
-        else:
-            what = "(unparsed action)"
-        rows.append((code(rendered), code(what), source))
-    return Section("WezTerm", "wezterm", rows, notes)
-
-
 # Herdr names its actions after what they touch, so the sub-heading each
 # binding belongs under can be read straight off the action. First match wins,
 # and anything unclaimed -- the prefix leader, `help`, and any action added
@@ -1258,7 +1219,6 @@ def main():
             lambda: parse_karabiner(home / ".config" / "karabiner" / "karabiner.json"),
         ),
         ("neovim", lambda: parse_nvim(home / ".config" / "nvim")),
-        ("wezterm", lambda: parse_wezterm(home / ".config" / "wezterm" / "wezterm.lua")),
         ("herdr", lambda: parse_herdr(home / ".config" / "herdr" / "config.toml")),
         (
             "vs code",

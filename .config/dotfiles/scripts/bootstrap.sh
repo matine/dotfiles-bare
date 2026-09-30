@@ -51,4 +51,4 @@ if [ ! -f "$HOME/.zshrc.local" ]; then
 	chirp --info "Created ~/.zshrc.local - add your secrets from the password manager (see README > Secrets)"
 fi
 
-chirp --success "Bootstrap complete. Open WezTerm and check the README for the manual steps"
+chirp --success "Bootstrap complete. Open Ghostty and check the README for the manual steps"

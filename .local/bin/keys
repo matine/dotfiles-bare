@@ -183,7 +183,7 @@ def scope_level(terms, section):
     `hr tab` is Herdr › Tabs and nothing else.
 
     A sub-section only narrows underneath a shorthand, never on its own: a bare
-    `tab` should still find every tab binding across Lazygit, WezTerm and Herdr
+    `tab` should still find every tab binding across Lazygit and Herdr
     rather than collapsing to the one sub-section that happens to be named for
     it.
     """
@@ -215,7 +215,7 @@ def search(rows, terms):
 
     # A shorthand is a filter, not just a ranking nudge: keep only the rows at
     # the deepest scope anything reached, so `hr` drops the `src` alias and the
-    # WezTerm rows that merely contain an h and an r.
+    # rows elsewhere that merely contain an h and an r.
     levels = {row[0]: scope_level(terms, row[0]) for _, _, row in scored}
     deepest = max(levels.values(), default=0)
     if deepest:

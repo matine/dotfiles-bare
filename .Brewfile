@@ -12,7 +12,6 @@ tap "ngrok/ngrok"
 tap "shopify/shopify"
 tap "supabase/tap"
 tap "vitorgalvao/tiny-scripts"
-tap "wezterm/wezterm", "https://github.com/wezterm/homebrew-wezterm.git"
 # Run your GitHub Actions locally
 brew "act"
 # Plugin manager for zsh, inspired by oh-my-zsh and vundle
@@ -168,7 +167,6 @@ cask "spotify"
 # Open-source code editor
 cask "visual-studio-code"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
-cask "wezterm"
 # Video communication and virtual meeting platform
 cask "zoom"
 mas "GarageBand", id: 682658836

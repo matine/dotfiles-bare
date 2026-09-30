@@ -2,7 +2,7 @@ onboarding = false
 
 [keys]
 # Backtick has no ASCII control code, so this relies on the Kitty keyboard
-# protocol. Ghostty enables it by default; WezTerm 20240203 does not.
+# protocol, which Ghostty enables by default.
 prefix = "ctrl+`"
 # Herdr's own keybinding overlay, the fastest way to look a chord up in situ.
 help = "prefix+?"

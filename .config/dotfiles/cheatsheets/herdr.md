@@ -6,7 +6,7 @@
 
 | Key / Alias | What it does | Source |
 | --- | --- | --- |
-| `` ctrl+` `` | **Prefix** leader for the `prefix+…` bindings below — Backtick has no ASCII control code, so this relies on the Kitty keyboard protocol. Ghostty enables it by default; WezTerm 20240203 does not. | `~/.config/herdr/config.toml` |
+| `` ctrl+` `` | **Prefix** leader for the `prefix+…` bindings below — Backtick has no ASCII control code, so this relies on the Kitty keyboard protocol, which Ghostty enables by default. | `~/.config/herdr/config.toml` |
 | `prefix+?` | Help — Herdr's own keybinding overlay, the fastest way to look a chord up in situ. | `~/.config/herdr/config.toml` |
 
 ### Workspaces

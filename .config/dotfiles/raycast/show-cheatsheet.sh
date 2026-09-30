@@ -8,7 +8,7 @@
 # Optional parameters:
 # @raycast.icon ⌨️
 # @raycast.packageName Dotfiles
-# @raycast.argument1 {"type": "dropdown", "placeholder": "Cheatsheet", "data": [{"title": "All", "value": "all"}, {"title": "Shell aliases", "value": "shell-aliases"}, {"title": "Shell functions", "value": "shell-functions"}, {"title": "Git aliases", "value": "git-aliases"}, {"title": "Karabiner", "value": "karabiner"}, {"title": "Neovim", "value": "neovim"}, {"title": "WezTerm", "value": "wezterm"}, {"title": "Herdr", "value": "herdr"}, {"title": "VS Code", "value": "vs-code"}, {"title": "Lazygit", "value": "lazygit"}, {"title": "Yazi", "value": "yazi"}, {"title": "Claude", "value": "claude"}, {"title": "Raycast", "value": "raycast"}]}
+# @raycast.argument1 {"type": "dropdown", "placeholder": "Cheatsheet", "data": [{"title": "All", "value": "all"}, {"title": "Shell aliases", "value": "shell-aliases"}, {"title": "Shell functions", "value": "shell-functions"}, {"title": "Git aliases", "value": "git-aliases"}, {"title": "Karabiner", "value": "karabiner"}, {"title": "Neovim", "value": "neovim"}, {"title": "Herdr", "value": "herdr"}, {"title": "VS Code", "value": "vs-code"}, {"title": "Lazygit", "value": "lazygit"}, {"title": "Yazi", "value": "yazi"}, {"title": "Claude", "value": "claude"}, {"title": "Raycast", "value": "raycast"}]}
 # @raycast.argument2 { "type": "text", "placeholder": "Search (optional)", "optional": true }
 
 # Documentation:
