@@ -40,4 +40,5 @@ alias ls-p="eza --all --absolute=on"
 alias gita="git config --get-regexp alias"
 
 # Dotfiles helpers
-alias dot-link="cd ~/dotfiles/scripts/ && sh ./symlinks.sh"
+alias dot="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
+alias lg-dot='lazygit --git-dir="$HOME/.dotfiles.git" --work-tree="$HOME"'
