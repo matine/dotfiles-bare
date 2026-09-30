@@ -18,5 +18,7 @@
 
 ## Dotfiles
 
-- I use dotfiles to store my user-specific configuration settings,
-  preferences, and environment customizations for apps. `~/dotfiles`
+- My dotfiles are a bare git repo (`~/.dotfiles.git`, work tree `$HOME`), run
+  with the `dot` alias instead of `git`. Config is edited in place in `~`;
+  scripts, cheatsheets and Raycast commands live in `~/.config/dotfiles`
+  (`$DOTFILES`), which has its own CLAUDE.md.

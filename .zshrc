@@ -33,8 +33,6 @@ eval "$(pyenv init --path)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Make all shell scripts executable
-chmod +x $DOTFILES/scripts/*
 # Add local bin to PATH
 export PATH=$PATH:$HOME/.local/bin
 
@@ -59,4 +57,3 @@ esac
 # Credentials live in ~/.zshrc.local, which is deliberately outside this repo so
 # it cannot be committed by accident. See README.md > Secrets.
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"

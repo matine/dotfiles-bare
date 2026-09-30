@@ -102,7 +102,6 @@ brew "sevenzip"
 # Cross-shell prompt for astronauts
 brew "starship"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
-brew "stow"
 # Opinionated Lua code formatter
 brew "stylua"
 # Terminal multiplexer

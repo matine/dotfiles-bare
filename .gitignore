@@ -22,3 +22,8 @@ npm-debug.log
 
 # Neovim writes its log next to its config
 **/.config/nvim/nvim.log
+
+# Skills synced down by Claude, not authored here
+**/.claude/commands/synced/
+**/.cc-writes/
+__pycache__/

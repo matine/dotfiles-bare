@@ -30,7 +30,7 @@ alias lg="lazygit"
 alias bi="brew install"
 alias bu="brew uninstall"
 alias bup="brew upgrade"
-alias bfile="brew bundle dump --force --file=$DOTFILES/home/.Brewfile"
+alias bfile="brew bundle dump --force --file=$HOME/.Brewfile"
 
 # Remap ls to eza
 alias ls="eza --all --hyperlink"

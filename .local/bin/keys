@@ -1,0 +1,369 @@
+#!/usr/bin/env python3
+"""
+Title: keys
+Usage: keys [query ...]
+
+Description:
+Fuzzy-searches the cheatsheets in cheatsheets/ and prints the matching keybindings and aliases.
+
+  keys split      -> everything matching "split"
+  keys nvim send  -> rows matching both terms
+  keys hr         -> section shorthand: lg/vm/rc/hr/yz show that section alone
+  keys hr tab     -> and a sub-section name after one narrows further
+  keys lg push    -> any other term searches within the section
+  keys            -> interactive picker if fzf is around, otherwise the lot
+
+Matching is a plain subsequence match done in Python, with no dependency on
+fzf or ripgrep, so this behaves identically when Raycast runs it with a bare
+PATH. Colour is only emitted when stdout is a terminal.
+"""
+
+from __future__ import annotations
+
+import argparse
+import itertools
+import os
+import re
+import shutil
+import subprocess
+import sys
+import textwrap
+from pathlib import Path
+
+DOTFILES = Path(os.environ.get("DOTFILES", Path.home() / ".config" / "dotfiles"))
+DEFAULT_SHEET = DOTFILES / "cheatsheets"
+
+# Short names for whole sections, so `keys lg push` beats typing "lazygit".
+# The value is matched against the section label, so it also covers the
+# sub-sections ("Lazygit › Files"). Only an exact term triggers these.
+SECTION_ALIASES = {
+    "lg": "lazygit",
+    "vm": "neovim",
+    "rc": "raycast",
+    "hr": "herdr",
+    "yz": "yazi",
+}
+
+# Widest the key column is allowed to get before it wraps.
+KEY_COLUMN = 22
+
+IS_TTY = sys.stdout.isatty()
+BOLD = "\033[1m" if IS_TTY else ""
+DIM = "\033[2m" if IS_TTY else ""
+CYAN = "\033[36m" if IS_TTY else ""
+RESET = "\033[0m" if IS_TTY else ""
+
+
+def clean(text):
+    """Turn a markdown table cell into plain terminal text."""
+    text = text.replace("\\|", "|")
+    # Code spans. The closing fence has to be as wide as the opening one, or a
+    # widened span like `` ctrl+` `` loses the backtick it was widened for.
+    text = re.sub(r"(`+)[ ]?(.*?)[ ]?\1", r"\2", text)
+    text = re.sub(r"\*\*(.*?)\*\*", r"\1", text)  # bold
+    text = re.sub(r"_\((.*?)\)_", r"(\1)", text)  # _(mode: n)_
+    text = re.sub(r"\[(.*?)\]\(.*?\)", r"\1", text)  # links
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def load(sheet):
+    """Parse the cheatsheet into (section, key, what, source) rows."""
+    try:
+        if sheet.is_dir():
+            # index.md lists the sheets in display order; any stray file follows.
+            files = sorted(sheet.glob("*.md"))
+            index = sheet / "index.md"
+            linked = re.findall(r"\]\(([\w-]+\.md)\)", index.read_text(encoding="utf-8")) if index.exists() else []
+            ordered = [sheet / n for n in linked if (sheet / n).exists()]
+            files = ordered + [f for f in files if f not in ordered and f != index]
+            text = "\n".join(f.read_text(encoding="utf-8") for f in files)
+            if not files:
+                raise FileNotFoundError
+        else:
+            text = sheet.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        sys.exit(
+            "keys: {} not found. Run scripts/generate-cheatsheet.py first.".format(sheet)
+        )
+
+    rows = []
+    section = "?"
+    subsection = subsub = None
+    for line in text.splitlines():
+        stripped = line.strip()
+        # Sub-headings carry real meaning -- in Lazygit the same key does
+        # different things per panel -- so they stay part of the label.
+        if stripped.startswith("#### "):
+            subsub = stripped[5:].strip()
+            continue
+        if stripped.startswith("### "):
+            subsection = stripped[4:].strip()
+            subsub = None
+            continue
+        if stripped.startswith("## "):
+            section = stripped[3:].strip()
+            subsection = subsub = None
+            continue
+        if not stripped.startswith("|") or not stripped.endswith("|"):
+            continue
+        # Split on unescaped pipes only, so a \| inside a cell survives.
+        cells = [clean(c) for c in re.split(r"(?<!\\)\|", stripped[1:-1])]
+        if len(cells) < 2:
+            continue
+        if not cells[0] and not cells[1]:  # blank placeholder row
+            continue
+        if set("".join(cells)) <= set("- :"):  # table separator
+            continue
+        if cells[0].lower() in ("key / alias", "key"):  # table header
+            continue
+        label = " › ".join(p for p in (section, subsection, subsub) if p)
+        rows.append((label, cells[0], cells[1], cells[2] if len(cells) > 2 else ""))
+    return rows
+
+
+def subsequence(term, text):
+    """(start, span) of the tightest left-to-right subsequence match, or None."""
+    pos = 0
+    start = None
+    for ch in term:
+        found = text.find(ch, pos)
+        if found == -1:
+            return None
+        if start is None:
+            start = found
+        pos = found + 1
+    return start, pos - start
+
+
+def score(term, section, key, what):
+    """How well one term matches one row. Higher is better, None is no match.
+
+    A term has to be a real substring of the key, the description or the
+    section -- or a tight subsequence of the key alone, which is what makes
+    `keys ldrac` find `<leader>ac`. Loose subsequence matching across the whole
+    row was tried first and matched almost everything, so it is deliberately
+    not done here. The source path is not searched at all: it repeats the tool
+    name on every row and only ever added noise.
+
+    A section shorthand outscores everything else: typing it is an explicit
+    "show me this section", and it should not lose to an incidental substring
+    hit like `rc` inside `src` or "force". Those incidental rows are then
+    dropped outright by the scoping in search(); the score only ranks whatever
+    survives it.
+    """
+    term = term.lower()
+    if not term:
+        return 0
+
+    alias = SECTION_ALIASES.get(term)
+    if alias and alias in section.lower():
+        return 1200
+
+    for weight, field in ((1000, key), (600, what), (400, section)):
+        found = field.lower().find(term)
+        if found != -1:
+            return weight - min(found, 99) + (150 if found == 0 else 0)
+
+    if len(term) >= 2:
+        span = subsequence(term, key.lower())
+        if span is not None:
+            start, length = span
+            # Reject matches so spread out they are accidental.
+            if length <= max(len(term) * 3, len(term) + 4):
+                return 300 - length - start
+    return None
+
+
+def scope_level(terms, section):
+    """How specifically the query names this row's section. 0, 1 or 2.
+
+    1 means a section shorthand picked the section out, 2 means another term
+    then named one of its sub-sections. search() keeps only the rows at the
+    deepest level any row reached, so `hr` is Herdr and nothing else, and
+    `hr tab` is Herdr › Tabs and nothing else.
+
+    A sub-section only narrows underneath a shorthand, never on its own: a bare
+    `tab` should still find every tab binding across Lazygit, WezTerm and Herdr
+    rather than collapsing to the one sub-section that happens to be named for
+    it.
+    """
+    head, _, sub = section.partition("›")
+    if not any(
+        SECTION_ALIASES.get(term.lower(), "\0") in head.lower() for term in terms
+    ):
+        return 0
+    words = re.findall(r"\w+", sub.lower())
+    for term in terms:
+        term = term.lower()
+        if len(term) >= 2 and any(word.startswith(term) for word in words):
+            return 2
+    return 1
+
+
+def search(rows, terms):
+    """Rows matching every term, grouped by section, best match first."""
+    scored = []
+    for idx, (section, key, what, source) in enumerate(rows):
+        total = 0
+        for term in terms:
+            value = score(term, section, key, what)
+            if value is None:
+                break
+            total += value
+        else:
+            scored.append((total, idx, (section, key, what, source)))
+
+    # A shorthand is a filter, not just a ranking nudge: keep only the rows at
+    # the deepest scope anything reached, so `hr` drops the `src` alias and the
+    # WezTerm rows that merely contain an h and an r.
+    levels = {row[0]: scope_level(terms, row[0]) for _, _, row in scored}
+    deepest = max(levels.values(), default=0)
+    if deepest:
+        scored = [item for item in scored if levels[item[2][0]] == deepest]
+        # Scoping means the query asked for a section rather than for the best
+        # matches in it, so the answer is the section as written. Ranking here
+        # would reorder the table by where in each description the term landed,
+        # which is noise: `hr tab` would come back New, Next, Previous.
+        scored.sort(key=lambda item: item[1])
+        return [row for _, _, row in scored]
+
+    # Rank sections by their strongest hit so headers are never repeated.
+    # Sections that tie fall back to the order they appear in the cheatsheet,
+    # not their names: "Herdr › Global, Tabs, Panes" is deliberate, and sorting
+    # alphabetically would shuffle it into Global, Panes, Tabs.
+    best = {}
+    order = {}
+    for total, idx, row in scored:
+        best[row[0]] = max(best.get(row[0], total), total)
+        order.setdefault(row[0], idx)
+    scored.sort(key=lambda item: (-best[item[2][0]], order[item[2][0]], -item[0], item[1]))
+    return [row for _, _, row in scored]
+
+
+def render(rows, width):
+    """Sections as underlined headings, keys in a column, descriptions wrapped.
+
+    Raycast renders this with no colour at all, so the shape of the text has to
+    carry the hierarchy on its own: a blank line and a rule under each section,
+    and both columns wrapped so a long entry still lines up under its column
+    instead of falling back to the left margin.
+
+    The key column wraps too, because rows like
+    "prefix+shift+tab / ctrl+alt+shift+t" list alternative bindings and are
+    wider than the column. Splitting them on the " / " they already contain
+    keeps the descriptions aligned; break_long_words is off so a single binding
+    is never chopped in half.
+
+    Every row is separated by a blank line. Raycast renders the output at a
+    fixed size with no control over leading, so an empty line is the only lever
+    there is on how tightly the rows sit together.
+    """
+    wrapped = [
+        (sec, textwrap.wrap(key, KEY_COLUMN, break_long_words=False) or [""], what)
+        for sec, key, what, _source in rows
+    ]
+    key_width = max((len(l) for _, k, _ in wrapped for l in k), default=3)
+    indent = 2 + key_width + 2
+    room = max(width - indent, 24)
+    lines = []
+    section = None
+    for sec, key_lines, what in wrapped:
+        if sec != section:
+            if lines:
+                lines.append("")
+            lines.append("{}{}{}".format(CYAN + BOLD, sec, RESET))
+            lines.append("{}{}{}".format(DIM, "─" * min(len(sec), width), RESET))
+            lines.append("")
+            section = sec
+        elif lines:
+            lines.append("")
+        body = textwrap.wrap(what, room) or [""]
+        for part, text in itertools.zip_longest(key_lines, body, fillvalue=""):
+            lines.append(
+                "  {}{:<{w}}{}  {}".format(BOLD, part, RESET, text, w=key_width).rstrip()
+            )
+    return lines
+
+
+def pick_with_fzf(rows):
+    """Interactive picker, only used when we have both a terminal and fzf."""
+    fzf = shutil.which("fzf")
+    if not fzf or not sys.stdin.isatty():
+        return None
+    payload = "\n".join(
+        "{:<24} {:<60} [{}]".format(key, what, sec) for sec, key, what, _ in rows
+    )
+    try:
+        done = subprocess.run(
+            [fzf, "--prompt=keys> ", "--height=60%", "--reverse", "--no-sort"],
+            input=payload,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        return None
+    if done.returncode != 0 or not done.stdout.strip():
+        return ""
+    return done.stdout.strip()
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="keys",
+        description="Fuzzy-search the dotfiles cheatsheet.",
+        epilog="section shorthands: "
+        + ", ".join("{} = {}".format(k, v) for k, v in sorted(SECTION_ALIASES.items())),
+    )
+    parser.add_argument("query", nargs="*", help="terms to match (all must match)")
+    parser.add_argument(
+        "-f",
+        "--file",
+        default=os.environ.get("CHEATSHEET", str(DEFAULT_SHEET)),
+        help="cheatsheet file or directory to search (default: %(default)s)",
+    )
+    parser.add_argument("-a", "--all", action="store_true", help="print every entry")
+    parser.add_argument(
+        "-p", "--plain", action="store_true", help="no colour, no interactive picker"
+    )
+    parser.add_argument(
+        "-w",
+        "--width",
+        type=int,
+        default=None,
+        help="wrap width (default: terminal width, or 88 when piped)",
+    )
+    args = parser.parse_args()
+
+    global BOLD, DIM, CYAN, RESET
+    if args.plain:
+        BOLD = DIM = CYAN = RESET = ""
+
+    rows = load(Path(args.file))
+    # Raycast hands the whole query over as one argument, so "lazygit push"
+    # arrives as a single argv entry. Split on whitespace to make that behave
+    # exactly like `keys lazygit push` from a shell.
+    terms = [t for arg in args.query for t in arg.split() if t.strip()]
+
+    if not terms and not args.all and not args.plain:
+        picked = pick_with_fzf(rows)
+        if picked is not None:
+            if picked:
+                print(picked)
+            return
+
+    matches = rows if (args.all or not terms) else search(rows, terms)
+    if not matches:
+        print("No match for {}.".format(" ".join(terms)))
+        return 1
+
+    # 88 rather than the full terminal width when piped: that is about as wide
+    # as Raycast's output view gets before it soft-wraps on its own.
+    width = args.width or (shutil.get_terminal_size((88, 24)).columns if IS_TTY else 88)
+    print("\n".join(render(matches, width)))
+    if terms:
+        print("\n{}{} match{}{}".format(DIM, len(matches), "" if len(matches) == 1 else "es", RESET))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main() or 0)
