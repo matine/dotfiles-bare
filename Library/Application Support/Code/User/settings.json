@@ -1,0 +1,47 @@
+{
+  "update.mode": "manual",
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "explorer.confirmDragAndDrop": false,
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact"
+  },
+  "editor.tabSize": 2,
+  "prettier.resolveGlobalModules": false,
+  "editor.wordWrap": "on",
+  "eslint.probe": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "vue",
+    "markdown",
+    "mdx"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.requireConfig": true,
+  "editor.inlineSuggest.enabled": true,
+  "editor.formatOnSave": true,
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "eslint.codeActionsOnSave.rules": null,
+  "auto-rename-tag.activationOnLanguage": ["html", "xml", "php", "javascript"],
+  "explorer.confirmDelete": false,
+  "workbench.editorAssociations": {
+    "*.gz": "default",
+    "**/cheatsheets/*.md": "vscode.markdown.preview.editor"
+  },
+  "files.associations": {
+    "*.ndjson": "json"
+  },
+  "terminal.integrated.mouseWheelScrollSensitivity": 3,
+  "terminal.integrated.gpuAcceleration": "off",
+  "window.autoDetectColorScheme": false,
+  "claudeCode.preferredLocation": "panel"
+}

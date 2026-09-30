@@ -1,0 +1,1 @@
+../../../dotfiles/home/.claude/skills/frontend-design/SKILL.md

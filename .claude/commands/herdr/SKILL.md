@@ -1,0 +1,1 @@
+../../../dotfiles/home/.claude/skills/herdr/SKILL.md
