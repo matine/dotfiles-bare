@@ -3,8 +3,8 @@
 [← Index](index.md)
 
 <!-- BEGIN MANUAL: yazi -->
-Yazi opens as a float over nvim — `<leader>e` at the cwd, `<leader>-` at the
-current file, `Ctrl-Up` to resume the last session. These are yazi's built-in
+Yazi opens as a float over nvim — `<leader>-` at the current file, `Ctrl-Up`
+to resume the last session. These are yazi's built-in
 defaults rather than repo config (there is no `keymap.toml`), so this section is
 maintained by hand -- the generator preserves everything between the MANUAL
 markers.

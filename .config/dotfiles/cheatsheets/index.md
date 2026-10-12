@@ -15,7 +15,7 @@ Search them all with `keys <terms>`, or open one with the Raycast
 - [Shell functions](shell-functions.md) (2 entries)
 - [Git aliases](git-aliases.md) (27 entries)
 - [Karabiner](karabiner.md) (3 entries)
-- [Neovim](neovim.md) (5 entries)
+- [Neovim](neovim.md) (4 entries)
 - [Herdr](herdr.md) (22 entries)
 - [VS Code](vs-code.md) (1 entries)
 - [Lazygit](lazygit.md) (manual)

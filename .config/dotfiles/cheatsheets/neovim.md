@@ -7,7 +7,6 @@
 | `Ctrl-s` | Save — `:write<cr>` _(mode: n)_ | `~/.config/nvim/lua/config/keymaps.lua` |
 | `<leader>r` | Restart — `:restart<cr>` _(mode: n)_ | `~/.config/nvim/lua/config/keymaps.lua` |
 | `<leader>-` | Open yazi at the current file — mikavilpas/yazi.nvim _(mode: n,v)_ | `~/.config/nvim/lua/plugins/yazi.lua` |
-| `<leader>e` | Open yazi in nvim's working directory — mikavilpas/yazi.nvim _(mode: n)_ | `~/.config/nvim/lua/plugins/yazi.lua` |
 | `Ctrl-Up` | Resume the last yazi session — mikavilpas/yazi.nvim _(mode: n)_ | `~/.config/nvim/lua/plugins/yazi.lua` |
 
 > **Note:** `~/.config/nvim/lua/plugins/example.lua` is disabled by an `if true then return {} end` guard, so its keymaps never load and are excluded.
@@ -68,6 +67,7 @@ _jumplist_, see it with `:jumps`).
 
 | Key | What it does |
 | --- | --- |
+| `gd` | Go to the definition of the symbol under the cursor, even in another file (needs the language's LSP) |
 | `Ctrl-o` | Go back to the previous position, even in another file |
 | `Ctrl-i` | Go forward again (same key as `Tab` in a terminal) |
 
@@ -78,6 +78,7 @@ _jumplist_, see it with `:jumps`).
 | `H` | Previous buffer (LazyVim -- stock nvim's `H` jumps to the top of the screen) |
 | `L` | Next buffer (LazyVim -- stock nvim's `L` jumps to the bottom of the screen) |
 | `Ctrl-w w` | Jump to the next window |
+| `<leader>e` | Toggle the file explorer (also opens on a bare `nvim`) |
 
 #### Search
 

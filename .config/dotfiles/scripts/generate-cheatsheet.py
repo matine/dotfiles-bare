@@ -149,8 +149,8 @@ preserves everything between the MANUAL markers.
 """
 
 YAZI_TEMPLATE = """\
-Yazi opens as a float over nvim — `<leader>e` at the cwd, `<leader>-` at the
-current file, `Ctrl-Up` to resume the last session. These are yazi's built-in
+Yazi opens as a float over nvim — `<leader>-` at the current file, `Ctrl-Up`
+to resume the last session. These are yazi's built-in
 defaults rather than repo config (there is no `keymap.toml`), so this section is
 maintained by hand -- the generator preserves everything between the MANUAL
 markers.
@@ -314,6 +314,7 @@ _jumplist_, see it with `:jumps`).
 
 | Key | What it does |
 | --- | --- |
+| `gd` | Go to the definition of the symbol under the cursor, even in another file (needs the language's LSP) |
 | `Ctrl-o` | Go back to the previous position, even in another file |
 | `Ctrl-i` | Go forward again (same key as `Tab` in a terminal) |
 
@@ -324,6 +325,7 @@ _jumplist_, see it with `:jumps`).
 | `H` | Previous buffer (LazyVim -- stock nvim's `H` jumps to the top of the screen) |
 | `L` | Next buffer (LazyVim -- stock nvim's `L` jumps to the bottom of the screen) |
 | `Ctrl-w w` | Jump to the next window |
+| `<leader>e` | Toggle the file explorer (also opens on a bare `nvim`) |
 
 #### Search
 
