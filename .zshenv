@@ -1,4 +1,4 @@
-export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+export PATH="$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:$PATH"
 export DOTFILES="$HOME/.config/dotfiles"
 export ZDOTDIR=$HOME
 export CODE="$HOME/Code"
