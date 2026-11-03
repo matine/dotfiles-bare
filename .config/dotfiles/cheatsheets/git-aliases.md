@@ -21,7 +21,7 @@
 | `git last` | `git log -1 HEAD --stat` | `~/.gitconfig` |
 | `git rv` | `git remote -v` | `~/.gitconfig` |
 | `git d` | `git diff` | `~/.gitconfig` |
-| `git dv` | `git difftool -t vimdiff -y` — **shadowed**, a later `dv` wins | `~/.gitconfig` |
+| `git dt` | `git difftool -t vimdiff -y` | `~/.gitconfig` |
 | `git set` | `git remote set-url origin` | `~/.gitconfig` |
 | `git rm` | `git rm -r` | `~/.gitconfig` |
 | `git st` | `git status -sb` | `~/.gitconfig` |
@@ -32,4 +32,6 @@
 | `git delalldry` | `git branch \| grep -v "develop\\|main"` _(shell)_ | `~/.gitconfig` |
 | `git delall` | `git branch \| grep -v "develop\\|main" \| xargs git branch -D` _(shell)_ | `~/.gitconfig` |
 
-> **Note:** `git dv` is defined 2 times; only the last definition is live.
+<!-- markdownlint-configure-file
+{ "MD041": false, "MD013": { "tables": false } }
+-->

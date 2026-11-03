@@ -31,7 +31,7 @@
 	last = log -1 HEAD --stat
 	rv = remote -v
 	d = diff
-	dv = difftool -t vimdiff -y
+	dt = difftool -t vimdiff -y
 	set = remote set-url origin
 	rm = rm -r
 	st = status -sb
