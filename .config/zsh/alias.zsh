@@ -3,6 +3,7 @@ alias a="bat $HOME/.config/zsh/alias.zsh"
 
 # Show every keybinding and alias (opens rendered, see editorAssociations in VSCode settings)
 alias cheat="code $DOTFILES/cheatsheets/index.md"
+alias cheat-gen="$DOTFILES/scripts/generate-cheatsheet.py"
 
 # Shell and PATH helpers
 alias path="echo $PATH | tr ':' '\n'"
@@ -25,6 +26,10 @@ alias nb="pnpm build"
 # GIT
 alias g="git"
 alias lg="lazygit"
+
+# Herdr
+alias hr="herdr-reset"
+alias hs="herdr-reset --soft"
 
 # Homebrew commands
 alias bi="brew install"
@@ -51,3 +56,4 @@ alias gita="git config --get-regexp alias"
 # Dotfiles helpers
 alias dot="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 alias lg-dot='lazygit --git-dir="$HOME/.dotfiles.git" --work-tree="$HOME"'
+alias dotcommit='GIT_DIR="$HOME/.dotfiles.git" GIT_WORK_TREE="$HOME" aicommit2'

@@ -5,11 +5,9 @@
 | Key / Alias | What it does | Source |
 | --- | --- | --- |
 | `Ctrl-s` | Save — `:write<cr>` _(mode: n)_ | `~/.config/nvim/lua/config/keymaps.lua` |
-| `<leader>r` | Restart — `:restart<cr>` _(mode: n)_ | `~/.config/nvim/lua/config/keymaps.lua` |
-| `<leader>-` | Open yazi at the current file — mikavilpas/yazi.nvim _(mode: n,v)_ | `~/.config/nvim/lua/plugins/yazi.lua` |
+| `<space>r` | Restart — `:restart<cr>` _(mode: n)_ | `~/.config/nvim/lua/config/keymaps.lua` |
+| `<space>-` | Open yazi at the current file — mikavilpas/yazi.nvim _(mode: n,v)_ | `~/.config/nvim/lua/plugins/yazi.lua` |
 | `Ctrl-Up` | Resume the last yazi session — mikavilpas/yazi.nvim _(mode: n)_ | `~/.config/nvim/lua/plugins/yazi.lua` |
-
-> **Note:** `~/.config/nvim/lua/plugins/example.lua` is disabled by an `if true then return {} end` guard, so its keymaps never load and are excluded.
 
 > **Note:** Everything else in Neovim comes from LazyVim's defaults, which live in the plugin itself and not in this repo.
 
@@ -24,10 +22,10 @@ hand -- the generator preserves everything between the MANUAL markers.
 | --- | --- |
 | `:ClaudeCodeStatus` | Check the IDE server is running |
 | `:ClaudeCodeStart` | Start the server if it isn't running |
-| `<leader>as` | Send the visual selection to Claude _(mode: v)_ |
-| `<leader>ab` | Add the current buffer to Claude's context |
-| `<leader>aa` | Accept Claude's proposed diff |
-| `<leader>ad` | Reject Claude's proposed diff |
+| `<space>as` | Send the visual selection to Claude _(mode: v)_ |
+| `<space>ab` | Add the current buffer to Claude's context |
+| `<space>aa` | Accept Claude's proposed diff |
+| `<space>ad` | Reject Claude's proposed diff |
 <!-- END MANUAL: nvim-claude-code -->
 
 ### Navigation
@@ -68,6 +66,7 @@ _jumplist_, see it with `:jumps`).
 | Key | What it does |
 | --- | --- |
 | `gd` | Go to the definition of the symbol under the cursor, even in another file (needs the language's LSP) |
+| `gr` | List every reference to the symbol under the cursor in a picker (needs the language's LSP) |
 | `Ctrl-o` | Go back to the previous position, even in another file |
 | `Ctrl-i` | Go forward again (same key as `Tab` in a terminal) |
 
@@ -78,16 +77,31 @@ _jumplist_, see it with `:jumps`).
 | `H` | Previous buffer (LazyVim -- stock nvim's `H` jumps to the top of the screen) |
 | `L` | Next buffer (LazyVim -- stock nvim's `L` jumps to the bottom of the screen) |
 | `Ctrl-w w` | Jump to the next window |
-| `<leader>e` | Toggle the file explorer (also opens on a bare `nvim`) |
+| `<space>e` | Toggle the file explorer (also opens on a bare `nvim`) |
 
 #### Search
 
 | Key | What it does |
 | --- | --- |
-| `/text` | Search forwards for `text` |
-| `?text` | Search backwards for `text` |
-| `n` / `N` | Next match / match in the opposite direction |
+| `/text` | Search forwards for `text` within the current file |
+| `?text` | Search backwards for `text` within the current file |
+| `n` / `N` | Next match / match in the opposite direction, within the current file |
+| `<space>sG` | Grep file contents across the whole working directory (`:pwd`) -- unlike `<space>/`, which searches the detected project root |
 <!-- END MANUAL: nvim-navigation -->
+
+### Buffers
+
+<!-- BEGIN MANUAL: nvim-buffers -->
+Each open file is a buffer, shown as a tab in the bar at the top. These are
+LazyVim defaults rather than repo config, so this block is maintained by hand --
+the generator preserves everything between the MANUAL markers.
+
+| Key | What it does |
+| --- | --- |
+| `<space>bd` | Delete the current buffer |
+| `<space>bp` | Toggle pin on the current buffer -- pinned buffers stay at the left |
+| `<space>bP` | Delete every buffer that isn't pinned |
+<!-- END MANUAL: nvim-buffers -->
 
 ### Insert
 

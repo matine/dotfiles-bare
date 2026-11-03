@@ -54,4 +54,5 @@ preserves everything between the MANUAL markers.
 | `M` | View options for merging the selected branch into the current branch (regular or squash merge) |
 | `o` | Create a pull request for the selected branch |
 | `enter` | View the commits of the selected branch |
+| `W` | Open diff options (e.g. diff the selected branch against another ref) |
 <!-- END MANUAL: lazygit -->

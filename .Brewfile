@@ -12,16 +12,19 @@ tap "ngrok/ngrok"
 tap "shopify/shopify"
 tap "supabase/tap"
 tap "vitorgalvao/tiny-scripts"
+tap "wezterm/wezterm", "https://github.com/wezterm/homebrew-wezterm.git"
 # Run your GitHub Actions locally
 brew "act"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node"
+# Reactive CLI that generates commit messages for Git and Jujutsu with AI
+brew "aicommit2"
 # Plugin manager for zsh, inspired by oh-my-zsh and vundle
 brew "antigen"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Select default apps for documents and URL schemes on macOS
 brew "duti"
-# Open-source, cross-platform JavaScript runtime environment
-brew "node"
 # AST-based pattern checker for JavaScript
 brew "eslint"
 # Modern, maintained replacement for ls
@@ -166,7 +169,6 @@ cask "slack"
 cask "spotify"
 # Open-source code editor
 cask "visual-studio-code"
-# GPU-accelerated cross-platform terminal emulator and multiplexer
 # Video communication and virtual meeting platform
 cask "zoom"
 mas "GarageBand", id: 682658836

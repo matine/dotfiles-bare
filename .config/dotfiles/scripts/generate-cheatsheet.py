@@ -146,6 +146,7 @@ preserves everything between the MANUAL markers.
 | `M` | View options for merging the selected branch into the current branch (regular or squash merge) |
 | `o` | Create a pull request for the selected branch |
 | `enter` | View the commits of the selected branch |
+| `W` | Open diff options (e.g. diff the selected branch against another ref) |
 """
 
 YAZI_TEMPLATE = """\
@@ -273,10 +274,10 @@ hand -- the generator preserves everything between the MANUAL markers.
 | --- | --- |
 | `:ClaudeCodeStatus` | Check the IDE server is running |
 | `:ClaudeCodeStart` | Start the server if it isn't running |
-| `<leader>as` | Send the visual selection to Claude _(mode: v)_ |
-| `<leader>ab` | Add the current buffer to Claude's context |
-| `<leader>aa` | Accept Claude's proposed diff |
-| `<leader>ad` | Reject Claude's proposed diff |
+| `<space>as` | Send the visual selection to Claude _(mode: v)_ |
+| `<space>ab` | Add the current buffer to Claude's context |
+| `<space>aa` | Accept Claude's proposed diff |
+| `<space>ad` | Reject Claude's proposed diff |
 """
 
 NVIM_NAVIGATION_TEMPLATE = """\
@@ -315,6 +316,7 @@ _jumplist_, see it with `:jumps`).
 | Key | What it does |
 | --- | --- |
 | `gd` | Go to the definition of the symbol under the cursor, even in another file (needs the language's LSP) |
+| `gr` | List every reference to the symbol under the cursor in a picker (needs the language's LSP) |
 | `Ctrl-o` | Go back to the previous position, even in another file |
 | `Ctrl-i` | Go forward again (same key as `Tab` in a terminal) |
 
@@ -325,15 +327,16 @@ _jumplist_, see it with `:jumps`).
 | `H` | Previous buffer (LazyVim -- stock nvim's `H` jumps to the top of the screen) |
 | `L` | Next buffer (LazyVim -- stock nvim's `L` jumps to the bottom of the screen) |
 | `Ctrl-w w` | Jump to the next window |
-| `<leader>e` | Toggle the file explorer (also opens on a bare `nvim`) |
+| `<space>e` | Toggle the file explorer (also opens on a bare `nvim`) |
 
 #### Search
 
 | Key | What it does |
 | --- | --- |
-| `/text` | Search forwards for `text` |
-| `?text` | Search backwards for `text` |
-| `n` / `N` | Next match / match in the opposite direction |
+| `/text` | Search forwards for `text` within the current file |
+| `?text` | Search backwards for `text` within the current file |
+| `n` / `N` | Next match / match in the opposite direction, within the current file |
+| `<space>sG` | Grep file contents across the whole working directory (`:pwd`) -- unlike `<space>/`, which searches the detected project root |
 """
 
 NVIM_INSERT_TEMPLATE = """\
@@ -427,6 +430,18 @@ MANUAL markers.
 | `Ctrl-d` / `Tab` | On the `:` line -- list / cycle through completions |
 """
 
+NVIM_BUFFERS_TEMPLATE = """\
+Each open file is a buffer, shown as a tab in the bar at the top. These are
+LazyVim defaults rather than repo config, so this block is maintained by hand --
+the generator preserves everything between the MANUAL markers.
+
+| Key | What it does |
+| --- | --- |
+| `<space>bd` | Delete the current buffer |
+| `<space>bp` | Toggle pin on the current buffer -- pinned buffers stay at the left |
+| `<space>bP` | Delete every buffer that isn't pinned |
+"""
+
 # (title, anchor, marker key, starting content if the section is missing)
 MANUAL_SECTIONS = [
     ("Lazygit", "lazygit", "lazygit", LAZYGIT_TEMPLATE),
@@ -442,6 +457,7 @@ MANUAL_SUBSECTIONS = {
     "neovim": [
         ("Claude Code", "nvim-claude-code", NVIM_CLAUDE_TEMPLATE),
         ("Navigation", "nvim-navigation", NVIM_NAVIGATION_TEMPLATE),
+        ("Buffers", "nvim-buffers", NVIM_BUFFERS_TEMPLATE),
         ("Insert", "nvim-insert", NVIM_INSERT_TEMPLATE),
         ("Delete", "nvim-delete", NVIM_DELETE_TEMPLATE),
         ("Yank", "nvim-yank", NVIM_YANK_TEMPLATE),
@@ -682,6 +698,27 @@ ALIAS_RE = re.compile(r"^\s*alias\s+([A-Za-z0-9_.\-]+)=(.+?)\s*$")
 FUNC_RE = re.compile(r"^\s*([A-Za-z0-9_.\-]+)\s*\(\)\s*\{")
 
 
+# Sub-heading for each alias, read off its expansion. First match wins, so
+# Dotfiles sits ahead of Git to claim the bare-repo git/lazygit aliases;
+# anything unclaimed falls through to Shell.
+SHELL_ALIAS_GROUPS = [
+    ("Cheatsheet", ("cheatsheet",)),
+    ("Dotfiles", (".dotfiles.git",)),
+    ("Git", ("git", "lazygit")),
+    ("pnpm", ("pnpm", "package.json")),
+    ("Homebrew", ("brew",)),
+    ("Herdr", ("herdr",)),
+]
+SHELL_ALIAS_ORDER = ["Shell", "Cheatsheet", "Git", "Dotfiles", "pnpm", "Homebrew", "Herdr"]
+
+
+def shell_alias_group(expansion):
+    for title, needles in SHELL_ALIAS_GROUPS:
+        if any(needle in expansion for needle in needles):
+            return title
+    return "Shell"
+
+
 def parse_shell_aliases(path):
     """Aliases from a zsh file. A comment describing exactly one alias is used
     as its description; group comments covering several fall back to the
@@ -710,14 +747,17 @@ def parse_shell_aliases(path):
     for _, _, _, cid in entries:
         shared[cid] = shared.get(cid, 0) + 1
 
-    rows = []
+    grouped = {}
     for name, expansion, comment, cid in entries:
         if comment and shared.get(cid) == 1:
             what = "{} — {}".format(cell(comment), code(expansion))
         else:
             what = code(expansion)
-        rows.append((code(name), what, code(rel(path))))
-    return Section("Shell aliases", "shell-aliases", rows)
+        row = (code(name), what, code(rel(path)))
+        grouped.setdefault(shell_alias_group(expansion), []).append(row)
+
+    groups = [(title, grouped[title]) for title in SHELL_ALIAS_ORDER if title in grouped]
+    return Section("Shell aliases", "shell-aliases", None, None, groups)
 
 
 def parse_shell_functions(path):
@@ -888,7 +928,7 @@ def pretty_key(lhs):
         key = found.group(2)
         return "-".join(mods + [key.capitalize() if len(key) > 1 else key])
 
-    return re.sub(r"<((?:[cCaAmMsS]-)+)([^>]+)>", spell, lhs)
+    return re.sub(r"<((?:[cCaAmMsS]-)+)([^>]+)>", spell, lhs).replace("<leader>", "<space>")
 
 
 # Plugin specs whose keys are left off the cheatsheet.

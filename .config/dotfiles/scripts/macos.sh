@@ -104,8 +104,8 @@ chirp --info "Disable press-and-hold for keys in favor of key repeat"
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
 chirp --info "Set a blazingly fast keyboard repeat rate"
-defaults write NSGlobalDomain KeyRepeat -int 3
-defaults write NSGlobalDomain InitialKeyRepeat -int 10
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 8
 
 chirp --info "Set language and text formats"
 # Note: if you’re in the US, replace `EUR` with `USD`, `Centimeters` with

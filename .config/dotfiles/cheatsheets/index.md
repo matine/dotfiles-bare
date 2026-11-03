@@ -11,7 +11,7 @@ Search them all with `keys <terms>`, or open one with the Raycast
 "Cheatsheet" command. Section shorthands: `lg` = Lazygit, `vm` = Neovim,
 `rc` = Raycast, `hr` = Herdr, `yz` = Yazi — so `keys lg push` narrows to one sheet.
 
-- [Shell aliases](shell-aliases.md) (25 entries)
+- [Shell aliases](shell-aliases.md) (28 entries)
 - [Shell functions](shell-functions.md) (2 entries)
 - [Git aliases](git-aliases.md) (27 entries)
 - [Karabiner](karabiner.md) (3 entries)

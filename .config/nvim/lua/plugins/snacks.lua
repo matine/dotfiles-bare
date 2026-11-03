@@ -3,8 +3,21 @@ return {
   opts = {
     -- The explorer takes the startup screen instead.
     dashboard = { enabled = false },
+    picker = { sources = { explorer = { hidden = true } } },
   },
   init = function()
+    -- Called by herdr-reset to return a running nvim to its startup state.
+    vim.api.nvim_create_user_command("StartScreen", function()
+      Snacks.bufdelete.all()
+      for _, picker in ipairs(Snacks.picker.get({ source = "explorer" })) do
+        picker:close()
+      end
+      vim.cmd("silent! only")
+      vim.schedule(function()
+        Snacks.explorer()
+      end)
+    end, {})
+
     vim.api.nvim_create_autocmd("VimEnter", {
       group = vim.api.nvim_create_augroup("explorer_startup", { clear = true }),
       callback = function()
