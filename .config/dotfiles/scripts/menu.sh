@@ -8,6 +8,7 @@ menu() {
         chirp --option "2:   Install Homebrew"
         chirp --option "3:   Install Homebrew packages"
         chirp --option "4:   Install (P)NPM packages"
+        chirp --option "p:   Install pipx packages"
         chirp --option "5:   Set default applications to open files"
         chirp --option "6:   Register Claude Code MCP servers"
         chirp --option "7:   Configure MacOS"
@@ -22,6 +23,7 @@ menu() {
             2) sh $DOTFILES/scripts/homebrew.sh || chirp --error "Failed to run the Homebrew installation script" ;;
             3) sh $DOTFILES/scripts/homebrew-packages.sh || chirp --error "Failed to run the Homebrew packages script" ;;
             4) sh $DOTFILES/scripts/npm-packages.sh || chirp --error "Failed to run the (P)NPM packages script" ;;
+            p) sh $DOTFILES/scripts/pipx-packages.sh || chirp --error "Failed to run the pipx packages script" ;;
             5) sh $DOTFILES/scripts/duti.sh || chirp --error "Failed to run the Duti script" ;;
             6) sh $DOTFILES/scripts/claude-mcp.sh || chirp --error "Failed to run the Claude MCP script" ;;
             7) sh $DOTFILES/scripts/macos.sh || chirp --error "Failed to run the MacOS configuration script" ;;

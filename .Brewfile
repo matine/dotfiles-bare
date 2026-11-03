@@ -89,6 +89,8 @@ brew "neofetch"
 brew "neovim"
 # Manage multiple Node.js versions
 brew "nvm"
+# Execute binaries from Python packages in isolated environments
+brew "pipx"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Python version management
