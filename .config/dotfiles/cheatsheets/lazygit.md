@@ -56,3 +56,7 @@ preserves everything between the MANUAL markers.
 | `enter` | View the commits of the selected branch |
 | `W` | Open diff options (e.g. diff the selected branch against another ref) |
 <!-- END MANUAL: lazygit -->
+
+<!-- markdownlint-configure-file
+{ "MD041": false, "MD013": { "tables": false } }
+-->

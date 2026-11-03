@@ -15,3 +15,7 @@ markers.
 | --- | --- |
 | `/ide` | Pick the IDE to connect to, or show the current one |
 <!-- END MANUAL: claude -->
+
+<!-- markdownlint-configure-file
+{ "MD041": false, "MD013": { "tables": false } }
+-->

@@ -103,3 +103,7 @@ markers.
 | `{` / `}` | Swap the current tab with the one before / after it |
 | `Ctrl-c` | Close the current tab |
 <!-- END MANUAL: yazi -->
+
+<!-- markdownlint-configure-file
+{ "MD041": false, "MD013": { "tables": false } }
+-->

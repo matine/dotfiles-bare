@@ -442,8 +442,60 @@ the generator preserves everything between the MANUAL markers.
 | `<space>bP` | Delete every buffer that isn't pinned |
 """
 
+DOTFILES_TEMPLATE = """\
+Working with the bare dotfiles repo (`~/.dotfiles.git`, work tree `$HOME`).
+Maintained by hand -- the generator preserves everything between the MANUAL
+markers.
+
+### Git
+
+| Command | What it does |
+| --- | --- |
+| `dot <git args>` | `git` for the dotfiles repo -- `dot status`, `dot diff`, `dot push` |
+| `dot add ~/path/to/file` | Track a new file -- untracked files are hidden from `dot status` |
+| `dot commit -am "msg"` | Commit every change to tracked files |
+| `dotcommit` | Write the commit message with AI (`aicommit2`) for staged dotfiles changes |
+| `lg-dot` | Open lazygit on the dotfiles repo |
+| `lg` | Open lazygit on the current repo |
+| `dot ls-files --error-unmatch <path>` | Check whether a file is tracked before putting anything sensitive in it |
+
+### Cheatsheets
+
+| Command | What it does |
+| --- | --- |
+| `keys <terms>` | Fuzzy-search every sheet -- `keys lg push` narrows to Lazygit |
+| `cheat` | Open the cheatsheet index in VS Code |
+| `cheat-dot` / `cheat-dot-t` | Open this sheet in VS Code / in the terminal (frogmouth) |
+| `cheat-gen` | Regenerate the sheets after changing a keybinding or alias |
+| `CAPS` + `k` | Raycast: pick a sheet to show |
+
+### Scripts and shell
+
+| Command | What it does |
+| --- | --- |
+| `sh $DOTFILES/scripts/menu.sh` | Menu to re-run any install or setup step |
+| `src` | Reload `~/.zshrc` |
+| `a` | Show the shell aliases |
+| `gita` | Show the git aliases |
+| `bfile` | Force-dump `~/.Brewfile` (it already updates after every `brew install`) |
+| `chirp --title/--info/--error` | Log from scripts instead of `echo` |
+
+### Tips
+
+- Edit config where the app expects it (`~/.zshrc`, `~/.config/nvim/`...); only
+  scripts, cheatsheets and Raycast commands live in `$DOTFILES`.
+- Never `dot add` a directory wholesale -- the work tree is all of `$HOME`.
+- No symlinks: git would track the link, not the contents.
+- Secrets go in `~/.zshrc.local` (untracked, sourced at the end of `.zshrc`).
+- Commit `~/.Brewfile` along with everything else -- it changes on every install.
+- New scripts get registered in `scripts/menu.sh` (and `install-all.sh` if
+  they belong in a fresh install).
+- Setting up a new machine: see `~/.github/README.md`.
+"""
+
 # (title, anchor, marker key, starting content if the section is missing)
 MANUAL_SECTIONS = [
+    ("Dotfiles", "dotfiles", "dotfiles", DOTFILES_TEMPLATE),
     ("Lazygit", "lazygit", "lazygit", LAZYGIT_TEMPLATE),
     ("Yazi", "yazi", "yazi", YAZI_TEMPLATE),
     ("Claude", "claude", "claude", CLAUDE_TEMPLATE),
@@ -464,6 +516,9 @@ MANUAL_SUBSECTIONS = {
         ("Commands", "nvim-commands", NVIM_COMMANDS_TEMPLATE),
     ],
 }
+
+
+LINT_CONFIG = '<!-- markdownlint-configure-file\n{ "MD041": false, "MD013": { "tables": false } }\n-->'
 
 
 def manual_markers(key):
@@ -1164,12 +1219,13 @@ def render_section(section, manual_bodies):
     for subtitle, key, _ in MANUAL_SUBSECTIONS.get(section.anchor, []):
         begin, end = manual_markers(key)
         out += ["### " + subtitle, "", begin, manual_bodies[key].rstrip(), end, ""]
+    out += [LINT_CONFIG, ""]
     return "\n".join(out)
 
 
 def render_manual(title, key, manual_bodies):
     begin, end = manual_markers(key)
-    out = ["## " + title, "", "[← Index](index.md)", "", begin, manual_bodies[key].rstrip(), end, ""]
+    out = ["## " + title, "", "[← Index](index.md)", "", begin, manual_bodies[key].rstrip(), end, "", LINT_CONFIG, ""]
     return "\n".join(out)
 
 

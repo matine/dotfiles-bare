@@ -201,3 +201,7 @@ MANUAL markers.
 | `:help TOPIC` | Help on `TOPIC` |
 | `Ctrl-d` / `Tab` | On the `:` line -- list / cycle through completions |
 <!-- END MANUAL: nvim-commands -->
+
+<!-- markdownlint-configure-file
+{ "MD041": false, "MD013": { "tables": false } }
+-->

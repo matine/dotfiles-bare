@@ -69,3 +69,7 @@ everything between the MANUAL markers.
 | `t-` | Prefix for Timeline sites |
 | `m-` | Prefix for my personal sites |
 <!-- END MANUAL: raycast -->
+
+<!-- markdownlint-configure-file
+{ "MD041": false, "MD013": { "tables": false } }
+-->

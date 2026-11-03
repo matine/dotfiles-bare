@@ -21,6 +21,8 @@
 | Key / Alias | What it does | Source |
 | --- | --- | --- |
 | `cheat` | `code $DOTFILES/cheatsheets/index.md` | `~/.config/zsh/alias.zsh` |
+| `cheat-dot` | `code $DOTFILES/cheatsheets/dotfiles.md` | `~/.config/zsh/alias.zsh` |
+| `cheat-dot-t` | `frogmouth $DOTFILES/cheatsheets/dotfiles.md` | `~/.config/zsh/alias.zsh` |
 | `cheat-gen` | `$DOTFILES/scripts/generate-cheatsheet.py` | `~/.config/zsh/alias.zsh` |
 
 ### Git
@@ -37,6 +39,7 @@
 | --- | --- | --- |
 | `dot` | `/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME` | `~/.config/zsh/alias.zsh` |
 | `lg-dot` | `lazygit --git-dir="$HOME/.dotfiles.git" --work-tree="$HOME"` | `~/.config/zsh/alias.zsh` |
+| `dotcommit` | `GIT_DIR="$HOME/.dotfiles.git" GIT_WORK_TREE="$HOME" aicommit2` | `~/.config/zsh/alias.zsh` |
 
 ### pnpm
 
@@ -64,3 +67,7 @@
 | --- | --- | --- |
 | `hr` | `herdr-reset` | `~/.config/zsh/alias.zsh` |
 | `hs` | `herdr-reset --soft` | `~/.config/zsh/alias.zsh` |
+
+<!-- markdownlint-configure-file
+{ "MD041": false, "MD013": { "tables": false } }
+-->

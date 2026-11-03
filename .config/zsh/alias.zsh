@@ -3,6 +3,8 @@ alias a="bat $HOME/.config/zsh/alias.zsh"
 
 # Show every keybinding and alias (opens rendered, see editorAssociations in VSCode settings)
 alias cheat="code $DOTFILES/cheatsheets/index.md"
+alias cheat-dot="code $DOTFILES/cheatsheets/dotfiles.md"
+alias cheat-dot-t="frogmouth $DOTFILES/cheatsheets/dotfiles.md"
 alias cheat-gen="$DOTFILES/scripts/generate-cheatsheet.py"
 
 # Shell and PATH helpers

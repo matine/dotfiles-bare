@@ -45,3 +45,7 @@
 | `prefix+z` | Zoom | `~/.config/herdr/config.toml` |
 
 > **Note:** `prefix` in the tables above means press `` ctrl+` `` first.
+
+<!-- markdownlint-configure-file
+{ "MD041": false, "MD013": { "tables": false } }
+-->
